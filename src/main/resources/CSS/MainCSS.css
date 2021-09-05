@@ -1,0 +1,19 @@
+#btnStart{
+    -fx-background-color: #6CC04A;
+}
+
+#btnStart:hover{
+    -fx-background-color: #C51A4A;
+}
+
+#tbTools{
+    -fx-background-color: #272727;
+}
+
+#crcPalet{
+    -fx-fill: #6CC04A;
+}
+
+#lblScore{
+    -fx-alignement: center;
+}
