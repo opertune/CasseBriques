@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="954.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cassebriques.Controller">
     <children>
-        <Rectangle id="rctJoueur1" fx:id="rctJoueur1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="13.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="103.0" x="427.0" y="505.0" />
+        <Rectangle id="rctJoueur1" fx:id="rctJoueur1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="13.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="100.0" x="427.0" y="505.0" />
         <Circle fx:id="crcPalet" centerX="477.0" centerY="315.0" fill="#79ff00" radius="12.0" stroke="TRANSPARENT" strokeType="INSIDE" />
         <Label fx:id="lblWinLose" layoutX="390.0" layoutY="271.0">
             <font>

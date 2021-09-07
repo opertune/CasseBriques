@@ -28,8 +28,8 @@ public class Player {
             @Override
             public void handle(KeyEvent keyEvent) {
                 switch (keyEvent.getCode()){
-                    case A: speed = -9; break;
-                    case D: speed = 9; break;
+                    case A: speed = -10; break;
+                    case D: speed = 10; break;
                 }
             }
         });
@@ -38,10 +38,7 @@ public class Player {
         _scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
-                switch (keyEvent.getCode()){
-                    case A: speed = 0; break;
-                    case D: speed = 0; break;
-                }
+                speed = 0;
             }
         });
 

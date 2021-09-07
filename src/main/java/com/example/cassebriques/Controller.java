@@ -20,13 +20,14 @@ public class Controller implements Initializable {
     public AnchorPane anchorPane;
     public static int pScore;
 
+
     @FXML
     private void clickStartButton(){
         // Check if a game is in progress : false -> launch palet
         if(!Palet.inGame){
             lblWinLose.setText("");
             crcPalet.setCenterX(477); crcPalet.setCenterY(315);
-            Palet palet = new Palet(rctJoueur1, crcPalet, lblWinLose, lblScore);
+            Palet palet = new Palet(rctJoueur1, crcPalet, lblWinLose, lblScore, anchorPane);
             palet.moveP();
             Palet.inGame = true;
         }
@@ -34,7 +35,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Briques newGame = new Briques(anchorPane);
-        newGame.newBriques();
+        Briques firstGame = new Briques(anchorPane);
+        firstGame.newBriques();
     }
 }

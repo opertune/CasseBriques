@@ -1,7 +1,9 @@
 package com.example.cassebriques;
 
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -11,93 +13,104 @@ public class Palet {
     private Rectangle _rctJoueur1;
     private Circle _crcPalet;
     private Label _lblWinLose, _lblScore;
+    private AnchorPane _anchorePane;
     public static boolean inGame = false;
 
     // Constructor
-    Palet(Rectangle rctJoueur1, Circle crcPalet, Label lblWinLose, Label lblScore){
+    Palet(Rectangle rctJoueur1, Circle crcPalet, Label lblWinLose, Label lblScore, AnchorPane anchorPane){
         this._rctJoueur1 = rctJoueur1;
         this._crcPalet = crcPalet;
         this._lblWinLose = lblWinLose;
         this._lblScore = lblScore;
+        this._anchorePane = anchorPane;
     }
 
     // Methods
     // Palet starting pos
     private static final double BOTTOM_LIMIT = 530;
-    private static final double INITIAL_VX = 0;
+    private static final double INITIAL_VX = -0.5;
     private static final double INITIAL_VY = 1;
-    private static final double SPEED_LIMITE = 30;
-    private static final double ACCELERATION = 1.1;
 
-    private static double angle = Math.atan2(INITIAL_VY, INITIAL_VX);
-    private static double magnitude = Math.sqrt(5);
 
-    private static double deltaX = magnitude * Math.cos(angle);
-    private static double deltaY = magnitude * Math.sin(angle);
+    private static Point2D v = new Point2D(INITIAL_VX, INITIAL_VY);
 
     public void moveP(){
+        v = v.multiply(5);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 // Check collision between player and palet
                 if(_rctJoueur1.getBoundsInParent().intersects(_crcPalet.getBoundsInParent())){
-                    // increased palet speed
-                    //magnitude *= (magnitude < SPEED_LIMITE) ? ACCELERATION : 1;
+                    v = new Point2D(v.getX(), -v.getY());
 
-                    // more the palet are close to the center less the angle are wide
-                    angle = (Math.PI / 4) * -Math.abs((_rctJoueur1.getX() + 75 - _crcPalet.getCenterX() - 12) / 75);
-                    deltaX = Math.abs(magnitude * Math.cos(angle));
-
-                    // value depends on the place or hits the palet : left or right side
-                    //deltaY = /*Si crcPalet touche le côté gauche alors*/(_crcPalet.getCenterY() <= /*left side*/_rctJoueur1.getX() + 75 ? Math.abs(magnitude * Math.sin(angle)) : -Math.abs(magnitude * Math.sin(angle)));
-                    if(_crcPalet.getCenterY() <= _rctJoueur1.getX() + 75){ // LEFT
-                        deltaY = -Math.abs(magnitude * Math.sin(angle));
-                    }else if(_crcPalet.getCenterY() >= _rctJoueur1.getX() - 75){ // RIGHT
-                        deltaY = -Math.abs(magnitude * Math.sin(angle));
-                    }
-
-                    // Check collision with left frame
+                // Collision with left side
                 }else if(_crcPalet.getCenterX() < 13){
-                    deltaX = -deltaX;
+                    v = new Point2D(-v.getX(), v.getY());
 
-                    // Check collision with right frame
+                    // Check collision with right side
                 }else if(_crcPalet.getCenterX() > 941){
-                    deltaX = -deltaX;
+                    v = new Point2D(-v.getX(), v.getY());
 
-                    // Check collision with top frame
+                    // Check collision with top side
                 }else if(_crcPalet.getCenterY() < 13){
-                    deltaY = -deltaY;
+                    v = new Point2D(v.getX(), -v.getY());
                 }
 
                 // if palet is out of box bottom side
                 if(_crcPalet.getCenterY() > BOTTOM_LIMIT) {
-                    outOfGrid("Lose !");
-
+                    outOfGrid();
                     // Stop AnimationTimer loop
                     stop();
                 }
 
+                // Collision between palet and briques
+                collision();
+                if(Controller.pScore == 96){
+                    _lblWinLose.setText("WIN !");
+                    _lblWinLose.setTextFill(Color.GREEN);
+                    stop();
+                }
+
                 // Set new position
-                _crcPalet.setCenterX(_crcPalet.getCenterX() + deltaX);
-                _crcPalet.setCenterY(_crcPalet.getCenterY() + deltaY);
+                _crcPalet.setCenterX(_crcPalet.getCenterX() + v.getX());
+                _crcPalet.setCenterY(_crcPalet.getCenterY() + v.getY());
             }
         };
         timer.start();
     }
 
     // Palet out of the grid (left and right side)
-    void outOfGrid(String txt){
-        _lblWinLose.setText(txt);
+    void outOfGrid(){
+        // set color and lose label
+        _lblWinLose.setText("LOSE !");
         _lblWinLose.setTextFill(Color.RED);
-
-        // Increase player score
-        Controller.pScore++;
-        _lblScore.setText("Score : " + Controller.pScore);
         inGame = false;
 
-        // Reset magnitude and delta
-        magnitude = Math.sqrt(3);
-        deltaX = magnitude * Math.cos(Math.atan2(1, 0));
-        deltaY = magnitude * Math.sin(Math.atan2(1, 0));
+        // Reset all briques
+        _anchorePane.getChildren().removeAll(Briques.briquesList);
+        Briques.briquesList.removeAll(Briques.briquesList);
+
+        Briques firstGame = new Briques(_anchorePane);
+        firstGame.newBriques();
+
+        // Reset palet position
+        v = new Point2D(INITIAL_VX, INITIAL_VY);
+    }
+
+    void collision(){
+        for(int i = 0; i < Briques.briquesList.size(); i++){
+            if(Briques.briquesList.get(i).getBoundsInParent().intersects(_crcPalet.getBoundsInParent())){
+                // Delete brique
+                _anchorePane.getChildren().remove(Briques.briquesList.get(i));
+                Briques.briquesList.remove(i);
+
+                // Increase score
+                Controller.pScore++;
+                _lblScore.setText("Score : " + Controller.pScore);
+
+                // set new pos
+                v = new Point2D(v.getX(), -v.getY());
+            }
+        }
     }
 }
