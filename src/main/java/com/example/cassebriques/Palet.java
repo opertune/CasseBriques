@@ -35,7 +35,7 @@ public class Palet {
     private static Point2D v = new Point2D(INITIAL_VX, INITIAL_VY);
 
     public void moveP(){
-        v = v.multiply(5);
+        v = v.multiply(3);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {

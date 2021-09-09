@@ -25,6 +25,8 @@ public class Controller implements Initializable {
     private void clickStartButton(){
         // Check if a game is in progress : false -> launch palet
         if(!Palet.inGame){
+            pScore = 0;
+            lblScore.setText("Score : " + Controller.pScore);
             lblWinLose.setText("");
             crcPalet.setCenterX(477); crcPalet.setCenterY(315);
             Palet palet = new Palet(rctJoueur1, crcPalet, lblWinLose, lblScore, anchorPane);
